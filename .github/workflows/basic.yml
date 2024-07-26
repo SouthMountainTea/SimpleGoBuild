@@ -28,22 +28,23 @@ on:
         
 
 jobs:
- 
-  create_issue_on_failure:
-    runs-on: ubuntu-latest 
-  
-    permissions:
-      issues: write 
+  example-job:
+    name: Save output
+    runs-on: ubuntu-latest
     steps:
-      - name: Create issue using REST API
+      - shell: bash
         run: |
-          curl --request POST \
-          --url https://api.github.com/repos/${{ github.repository }}/issues \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --header 'content-type: application/json' \
-          --data '{
-            "title": "Failure: ${{ inputs.title }}",
-            "body": "Details: ${{ inputs.body }}"
-            }' \
-          --fail 
-      
+          expr 1 + 1 > output.log
+      - name: Upload output file
+        uses: actions/upload-artifact@v4
+        with:
+          name: output-log-file
+          path: output.log
+  example-job2:
+    needs: example-job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download a single artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: output-log-file
