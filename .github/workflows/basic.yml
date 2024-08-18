@@ -13,5 +13,3 @@ jobs:
       
       - name: Run a one-line script
         uses: lgmorand/github-action-hello@v1
-        with:
-          firstname: 'louis-guillaume'
