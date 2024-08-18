@@ -1,8 +1,11 @@
-name: CI - Test Action
+name: CI
 
 on:
-  push:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to create'     
+        required: true
 
 jobs:
   build:
@@ -10,6 +13,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Run a one-line script
-        uses: lgmorand/github-action-hello@v1
+        with:
+          fetch-depth: 0
+
+      - name: Generate release + changelog
+        id: relnotes
+        uses: lgmorand/github-action-generate-relnotes@v2
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          newTag: ${{ github.event.inputs.tag }}
+          generateArtifact: true
+        
+      - name: Test the generated release notes
+        run: echo "${{ steps.relnotes.outputs.relnotes }}"
+        
+      - uses: actions/upload-artifact@v3
+        with:
+          name: changelog
+          path: changelog.txt
