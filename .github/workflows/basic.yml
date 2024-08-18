@@ -18,7 +18,7 @@ jobs:
 
       - name: Generate release + changelog
         id: relnotes
-        uses: lgmorand/github-action-generate-relnotes@v2.0.6
+        uses: lgmorand/github-action-generate-relnotes@main
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           newTag: ${{ github.event.inputs.tag }}
